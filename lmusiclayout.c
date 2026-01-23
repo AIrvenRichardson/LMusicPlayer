@@ -39,7 +39,7 @@ int main()
     // lmusiclayout: controls initialization
     //----------------------------------------------------------------------------------
     bool LMusicPlayerActive = true;
-    float Volume SliderValue = 0.0f;
+    float VolumeSliderValue = 0.0f;
     bool ShuffleEnabledChecked = false;
     bool LoopEnabledChecked = false;
     //----------------------------------------------------------------------------------
@@ -70,7 +70,7 @@ int main()
                 if (GuiButton((Rectangle){ 512, 512, 120, 24 }, "Pause")) Button(); 
                 if (GuiButton((Rectangle){ 640, 512, 120, 24 }, ">>")) Button(); 
                 if (GuiButton((Rectangle){ 384, 512, 120, 24 }, "<<")) Button(); 
-                GuiSliderBar((Rectangle){ 752, 176, 120, 16 }, NULL, NULL, &Volume SliderValue, 0, 100);
+                GuiSliderBar((Rectangle){ 752, 176, 120, 16 }, NULL, NULL, &VolumeSliderValue, 0, 100);
                 GuiLabel((Rectangle){ 728, 168, 112, 16 }, "Vol:");
                 GuiPanel((Rectangle){ 384, 208, 376, 272 }, NULL);
                 GuiCheckBox((Rectangle){ 312, 512, 24, 24 }, "Shuffle", &ShuffleEnabledChecked);
@@ -93,14 +93,6 @@ int main()
 //------------------------------------------------------------------------------------
 // Controls Functions Definitions (local)
 //------------------------------------------------------------------------------------
-static void Button()
-{
-    // TODO: Implement control logic
-}
-static void Button()
-{
-    // TODO: Implement control logic
-}
 static void Button()
 {
     // TODO: Implement control logic
