@@ -20,9 +20,9 @@
 //----------------------------------------------------------------------------------
 // Controls Functions Declaration
 //----------------------------------------------------------------------------------
-static void Button();
-static void Button();
-static void Button();
+static void PauseButton();
+static void NextButton();
+static void PrevButton();
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -31,7 +31,7 @@ int main()
 {
     // Initialization
     //---------------------------------------------------------------------------------------
-    int screenWidth = 800;
+    int screenWidth = 410;
     int screenHeight = 450;
 
     InitWindow(screenWidth, screenHeight, "lmusiclayout");
@@ -39,12 +39,13 @@ int main()
     // lmusiclayout: controls initialization
     //----------------------------------------------------------------------------------
     bool LMusicPlayerActive = true;
-    float VolumeSliderValue = 0.0f;
+    float VolumeSliderValue = 100.0f;
     bool ShuffleEnabledChecked = false;
     bool LoopEnabledChecked = false;
     //----------------------------------------------------------------------------------
 
     SetTargetFPS(60);
+    //GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
     //--------------------------------------------------------------------------------------
 
     // Main game loop
@@ -65,16 +66,15 @@ int main()
             //----------------------------------------------------------------------------------
             if (LMusicPlayerActive)
             {
-                LMusicPlayerActive = !GuiWindowBox((Rectangle){ 280, 136, 608, 456 }, "LMusic");
-                GuiLabel((Rectangle){ 528, 480, 120, 24 }, "Now Playing: X");
-                if (GuiButton((Rectangle){ 512, 512, 120, 24 }, "Pause")) Button(); 
-                if (GuiButton((Rectangle){ 640, 512, 120, 24 }, ">>")) Button(); 
-                if (GuiButton((Rectangle){ 384, 512, 120, 24 }, "<<")) Button(); 
-                GuiSliderBar((Rectangle){ 752, 176, 120, 16 }, NULL, NULL, &VolumeSliderValue, 0, 100);
-                GuiLabel((Rectangle){ 728, 168, 112, 16 }, "Vol:");
-                GuiPanel((Rectangle){ 384, 208, 376, 272 }, NULL);
-                GuiCheckBox((Rectangle){ 312, 512, 24, 24 }, "Shuffle", &ShuffleEnabledChecked);
-                GuiCheckBox((Rectangle){ 312, 552, 24, 24 }, "Loop", &LoopEnabledChecked);
+                GuiLabel((Rectangle){ 25, 20, 120, 24 }, "Now Playing: X");
+                if (GuiButton((Rectangle){ screenWidth/2-60, screenHeight-30, 120, 24 }, "Pause")) PauseButton(); 
+                if (GuiButton((Rectangle){ screenWidth/2+60, screenHeight-30, 120, 24 }, ">>")) NextButton(); 
+                if (GuiButton((Rectangle){ screenWidth/2-180, screenHeight-30, 120, 24 }, "<<")) PrevButton(); 
+                GuiSliderBar((Rectangle){ screenWidth-145, 20, 120, 16 }, NULL, NULL, &VolumeSliderValue, 0, 100);
+                GuiLabel((Rectangle){ screenWidth-170, 20, 112, 16 }, "Vol:");
+                GuiPanel((Rectangle){ 25, 50, 360, 360 }, NULL);
+                GuiCheckBox((Rectangle){ screenWidth-48, 410-24, 24, 24 }, "Shuffle", &ShuffleEnabledChecked);
+                GuiCheckBox((Rectangle){ screenWidth-72, 410-24, 24, 24 }, "Loop", &LoopEnabledChecked);
             }
             //----------------------------------------------------------------------------------
 
@@ -93,8 +93,17 @@ int main()
 //------------------------------------------------------------------------------------
 // Controls Functions Definitions (local)
 //------------------------------------------------------------------------------------
-static void Button()
+static void PauseButton()
 {
     // TODO: Implement control logic
 }
 
+static void NextButton()
+{
+    // TODO: Implement control logic
+}
+
+static void PrevButton()
+{
+    // TODO: Implement control logic
+}
