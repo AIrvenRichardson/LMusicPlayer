@@ -1,10 +1,10 @@
 /*******************************************************************************************
 *
-*   Lmusiclayout v1.0.0 - Tool Description
+*   LMusicPlayer v1.0.0 - Tool Description
 *
 *   LICENSE: Propietary License
 *
-*   Copyright (c) 2022 AIrvenRIchardson. All Rights Reserved.
+*   Copyright (c) 2026 AIrvenRIchardson. All Rights Reserved.
 *
 *   Unauthorized copying of this file, via any medium is strictly prohibited
 *   This project is proprietary and confidential unless the owner allows
@@ -34,7 +34,7 @@ int main()
     int screenWidth = 410;
     int screenHeight = 450;
 
-    InitWindow(screenWidth, screenHeight, "lmusiclayout");
+    InitWindow(screenWidth, screenHeight, "Music Player");
 
     // lmusiclayout: controls initialization
     //----------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ int main()
     //----------------------------------------------------------------------------------
 
     SetTargetFPS(60);
-    //GuiSetStyle(DEFAULT, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
+    GuiLoadStyle("style_cyber.rgs"); // Load raygui style file
     //--------------------------------------------------------------------------------------
 
     // Main game loop
@@ -74,7 +74,7 @@ int main()
                 GuiLabel((Rectangle){ screenWidth-170, 20, 112, 16 }, "Vol:");
                 GuiPanel((Rectangle){ 25, 50, 360, 360 }, NULL);
                 GuiCheckBox((Rectangle){ screenWidth-48, 410-24, 24, 24 }, "Shuffle", &ShuffleEnabledChecked);
-                GuiCheckBox((Rectangle){ screenWidth-72, 410-24, 24, 24 }, "Loop", &LoopEnabledChecked);
+                GuiCheckBox((Rectangle){ 25, 410-24, 24, 24 }, "Loop", &LoopEnabledChecked);
             }
             //----------------------------------------------------------------------------------
 
