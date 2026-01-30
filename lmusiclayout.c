@@ -23,6 +23,9 @@
 static void PauseButton();
 static void NextButton();
 static void PrevButton();
+static void MenuButton();
+static void LoopButton();
+static void ShuffleButton();
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -67,14 +70,15 @@ int main()
             if (LMusicPlayerActive)
             {
                 GuiLabel((Rectangle){ 25, 20, 120, 24 }, "Now Playing: X");
-                if (GuiButton((Rectangle){ screenWidth/2-60, screenHeight-30, 120, 24 }, "Pause")) PauseButton(); 
-                if (GuiButton((Rectangle){ screenWidth/2+60, screenHeight-30, 120, 24 }, ">>")) NextButton(); 
-                if (GuiButton((Rectangle){ screenWidth/2-180, screenHeight-30, 120, 24 }, "<<")) PrevButton(); 
+                if (GuiButton((Rectangle){ screenWidth/2-12, screenHeight-30, 24, 24 }, "#132#")) PauseButton(); 
+                if (GuiButton((Rectangle){ screenWidth/2+36, screenHeight-30, 24, 24 }, "#134#")) NextButton(); 
+                if (GuiButton((Rectangle){ screenWidth/2-60, screenHeight-30, 24, 24 }, "#129#")) PrevButton(); 
+                if (GuiButton((Rectangle){ 25, screenHeight-30, 24, 24 }, "#78#")) ShuffleButton(); 
+                if (GuiButton((Rectangle){ screenWidth-48, screenHeight-30, 24, 24 }, "#74#")) LoopButton(); 
+                if (GuiButton((Rectangle){ 0, 0, 24, 24 }, "#141#")) MenuButton();
                 GuiSliderBar((Rectangle){ screenWidth-145, 20, 120, 16 }, NULL, NULL, &VolumeSliderValue, 0, 100);
                 GuiLabel((Rectangle){ screenWidth-170, 20, 112, 16 }, "Vol:");
                 GuiPanel((Rectangle){ 25, 50, 360, 360 }, NULL);
-                GuiCheckBox((Rectangle){ screenWidth-48, 410-24, 24, 24 }, "Shuffle", &ShuffleEnabledChecked);
-                GuiCheckBox((Rectangle){ 25, 410-24, 24, 24 }, "Loop", &LoopEnabledChecked);
             }
             //----------------------------------------------------------------------------------
 
@@ -106,4 +110,19 @@ static void NextButton()
 static void PrevButton()
 {
     // TODO: Implement control logic
+}
+
+static void LoopButton()
+{
+    // TODO: Implement control logic
+}
+
+static void ShuffleButton()
+{
+    // TODO: Implement control logic
+}
+
+static void MenuButton()
+{
+    // GUHHHH   
 }
