@@ -17,6 +17,11 @@
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
 
+#undef RAYGUI_IMPLEMENTATION
+
+#define GUI_WINDOW_FILE_DIALOG_IMPLEMENTATION
+#include "gui_window_file_dialog.h"
+
 //----------------------------------------------------------------------------------
 // Controls Functions Declaration
 //----------------------------------------------------------------------------------
@@ -26,6 +31,13 @@ static void PrevButton();
 static void MenuButton();
 static void LoopButton();
 static void ShuffleButton();
+
+//------------------------------------------------------------------------------------
+// Global Controls Variables Declaration
+//------------------------------------------------------------------------------------
+bool ShuffleEnabledChecked = false;
+bool LoopEnabledChecked = false;
+bool Paused = false;
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -43,9 +55,12 @@ int main()
     //----------------------------------------------------------------------------------
     bool LMusicPlayerActive = true;
     float VolumeSliderValue = 100.0f;
-    bool ShuffleEnabledChecked = false;
-    bool LoopEnabledChecked = false;
     //----------------------------------------------------------------------------------
+    
+    // Gui file dialog initialization
+    GuiWindowFileDialogState fileDialogState = InitGuiWindowFileDialog(GetWorkingDirectory());
+    char fileNameToLoad[1024] = { 0 };
+    Texture texture = { 0 }; //Just gonna load an image for testing
 
     SetTargetFPS(60);
     GuiLoadStyle("style_cyber.rgs"); // Load raygui style file
@@ -56,7 +71,18 @@ int main()
     {
         // Update
         //----------------------------------------------------------------------------------
-        // TODO: Implement required update logic
+        if (fileDialogState.SelectFilePressed)
+        {
+            if (IsFileExtension(fileDialogState.fileNameText, ".png") || IsFileExtension(fileDialogState.fileNameText, ".jpg"))
+            {
+                strcpy(fileNameToLoad, TextFormat("%s/%s", fileDialogState.dirPathText, fileDialogState.fileNameText));
+                // Load texture from file
+                if (texture.id != 0) UnloadTexture(texture); // Unload previous texture
+                texture = LoadTexture(fileNameToLoad);
+                printf("Loaded file: %s\n", fileNameToLoad);
+            }
+            fileDialogState.SelectFilePressed = false;
+        }
         //----------------------------------------------------------------------------------
 
         // Draw
@@ -65,8 +91,8 @@ int main()
 
             ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR))); 
 
-            // raygui: controls drawing
-            //----------------------------------------------------------------------------------
+            if (fileDialogState.windowActive) GuiLock();
+
             if (LMusicPlayerActive)
             {
                 GuiLabel((Rectangle){ 25, 20, 120, 24 }, "Now Playing: X");
@@ -75,12 +101,15 @@ int main()
                 if (GuiButton((Rectangle){ screenWidth/2-60, screenHeight-30, 24, 24 }, "#129#")) PrevButton(); 
                 if (GuiButton((Rectangle){ 25, screenHeight-30, 24, 24 }, "#78#")) ShuffleButton(); 
                 if (GuiButton((Rectangle){ screenWidth-48, screenHeight-30, 24, 24 }, "#74#")) LoopButton(); 
-                if (GuiButton((Rectangle){ 0, 0, 24, 24 }, "#141#")) MenuButton();
+                if (GuiButton((Rectangle){ 0, 0, 24, 24 }, "#141#")) fileDialogState.windowActive = true;
                 GuiSliderBar((Rectangle){ screenWidth-145, 20, 120, 16 }, NULL, NULL, &VolumeSliderValue, 0, 100);
                 GuiLabel((Rectangle){ screenWidth-170, 20, 112, 16 }, "Vol:");
                 GuiPanel((Rectangle){ 25, 50, 360, 360 }, NULL);
+                DrawTexture(texture, 25, 50, WHITE);
             }
-            //----------------------------------------------------------------------------------
+
+            GuiUnlock();
+            GuiWindowFileDialog(&fileDialogState);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
@@ -99,7 +128,8 @@ int main()
 //------------------------------------------------------------------------------------
 static void PauseButton()
 {
-    // TODO: Implement control logic
+    Paused = !Paused;
+    printf(Paused ? "Music Paused\n" : "Music Resumed\n");
 }
 
 static void NextButton()
@@ -114,12 +144,14 @@ static void PrevButton()
 
 static void LoopButton()
 {
-    // TODO: Implement control logic
+    LoopEnabledChecked = !LoopEnabledChecked;
+    printf(LoopEnabledChecked ? "Loop Enabled\n" : "Loop Disabled\n");
 }
 
 static void ShuffleButton()
 {
-    // TODO: Implement control logic
+    ShuffleEnabledChecked = !ShuffleEnabledChecked;
+    printf(ShuffleEnabledChecked ? "Shuffle Enabled\n" : "Shuffle Disabled\n");
 }
 
 static void MenuButton()
