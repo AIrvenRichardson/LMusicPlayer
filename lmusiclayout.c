@@ -17,6 +17,7 @@
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
 
+#define SUPPORT_FILEFORMAT_FLAC 1// Enable FLAC audio format support
 #undef RAYGUI_IMPLEMENTATION // Avoids multiple implementation compilation issues
 #define GUI_WINDOW_FILE_DIALOG_IMPLEMENTATION
 #include "gui_window_file_dialog.h"
@@ -39,19 +40,24 @@ int main()
     // Initialization
     int screenWidthDefault = 410, screenHeightDefault = 450;
 
+    SetConfigFlags(FLAG_BORDERLESS_WINDOWED_MODE);
     InitWindow(screenWidthDefault, screenHeightDefault, "Music Player");
 
     // lmusiclayout: controls initialization
     bool LMusicPlayerActive = true;
     float VolumeSliderValue = 100.0f;
-    bool showFileDialogWindow = false;
 
     // Gui file dialog initialization
     GuiWindowFileDialogState fileDialogState = InitGuiWindowFileDialog(GetWorkingDirectory());
     char fileNameToLoad[1024] = { 0 };
-    Texture texture = { 0 }; //Just gonna load an image for testing
     int dialogWidth = 440, dialogHeight = 310;
     fileDialogState.windowBounds = (Rectangle){ 0, 0, dialogWidth, dialogHeight };
+
+    // Music Initialization
+    InitAudioDevice();
+    Music music = {0};
+    float timePlayed = 0.0f;
+
 
     SetTargetFPS(60);
     GuiLoadStyle("style_cyber.rgs"); // Load raygui style file
@@ -60,15 +66,25 @@ int main()
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         // Update
+        if (!Paused)
+        {
+            UpdateMusicStream(music);
+            timePlayed = GetMusicTimePlayed(music);
+            SetMusicVolume(music, VolumeSliderValue/100.0f);
+        }
+
         if (fileDialogState.SelectFilePressed)
         {
-            if (IsFileExtension(fileDialogState.fileNameText, ".png") || IsFileExtension(fileDialogState.fileNameText, ".jpg"))
+            if (IsFileExtension(fileDialogState.fileNameText, ".mp3") 
+            || IsFileExtension(fileDialogState.fileNameText, ".flac") //TODO: Need to compile raylib with FLAC support
+            || IsFileExtension(fileDialogState.fileNameText, ".wav"))
             {
                 strcpy(fileNameToLoad, TextFormat("%s/%s", fileDialogState.dirPathText, fileDialogState.fileNameText));
-                // Load texture from file
-                if (texture.id != 0) UnloadTexture(texture); // Unload previous texture
-                texture = LoadTexture(fileNameToLoad);
+                // Load music from file
+                music = LoadMusicStream(fileNameToLoad);
                 printf("Loaded file: %s\n", fileNameToLoad);
+                PlayMusicStream(music);
+                Paused = false;
             }
             fileDialogState.SelectFilePressed = false;
         }
@@ -97,7 +113,6 @@ int main()
                 GuiSliderBar((Rectangle){ screenWidthDefault-145, 20, 120, 16 }, NULL, NULL, &VolumeSliderValue, 0, 100);
                 GuiLabel((Rectangle){ screenWidthDefault-170, 20, 112, 16 }, "Vol:");
                 GuiPanel((Rectangle){ 25, 50, 360, 360 }, NULL);
-                DrawTexture(texture, 25, 50, WHITE);
             }
 
             GuiUnlock();
