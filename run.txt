@@ -1,3 +1,0 @@
-gcc -o lmusiclayout.exe lmusiclayout.c  -I include -L lib -lraylib -lgdi32 -lwinmm
-
-this is just the compile function im too lazy to do the makefile just yet
