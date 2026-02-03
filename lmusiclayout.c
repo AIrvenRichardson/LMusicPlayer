@@ -38,7 +38,7 @@ bool Paused = false;
 int main()
 {
     // Initialization
-    int screenWidthDefault = 410, screenHeightDefault = 450;
+    int screenWidthDefault = 410, screenHeightDefault = 480;
 
     SetConfigFlags(FLAG_BORDERLESS_WINDOWED_MODE);
     InitWindow(screenWidthDefault, screenHeightDefault, "Music Player");
@@ -46,17 +46,19 @@ int main()
     // lmusiclayout: controls initialization
     bool LMusicPlayerActive = true;
     float VolumeSliderValue = 100.0f;
-
+    float TimeSliderValue = 0.0f;
+    
     // Gui file dialog initialization
     GuiWindowFileDialogState fileDialogState = InitGuiWindowFileDialog(GetWorkingDirectory());
     char fileNameToLoad[1024] = { 0 };
     int dialogWidth = 440, dialogHeight = 310;
     fileDialogState.windowBounds = (Rectangle){ 0, 0, dialogWidth, dialogHeight };
-
+    
     // Music Initialization
     InitAudioDevice();
     Music music = {0};
     float timePlayed = 0.0f;
+    float lastTimeSliderValue = 0.0f;
 
 
     SetTargetFPS(60);
@@ -66,11 +68,19 @@ int main()
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         // Update
+        if (music.looping != LoopEnabledChecked) music.looping = LoopEnabledChecked;
+
         if (!Paused)
         {
             UpdateMusicStream(music);
             timePlayed = GetMusicTimePlayed(music);
             SetMusicVolume(music, VolumeSliderValue/100.0f);
+            if (lastTimeSliderValue != TimeSliderValue) {
+                SeekMusicStream(music, TimeSliderValue);
+                timePlayed = TimeSliderValue;
+            }
+            TimeSliderValue = timePlayed;
+            lastTimeSliderValue = TimeSliderValue;
         }
 
         if (fileDialogState.SelectFilePressed)
@@ -85,6 +95,7 @@ int main()
                 printf("Loaded file: %s\n", fileNameToLoad);
                 PlayMusicStream(music);
                 Paused = false;
+                TimeSliderValue = timePlayed;
             }
             fileDialogState.SelectFilePressed = false;
         }
@@ -111,6 +122,7 @@ int main()
                 if (GuiButton((Rectangle){ screenWidthDefault-48, screenHeightDefault-30, 24, 24 }, "#74#")) LoopButton(); 
                 if (GuiButton((Rectangle){ 0, 0, 24, 24 }, "#141#")) fileDialogState.windowActive = true;
                 GuiSliderBar((Rectangle){ screenWidthDefault-145, 20, 120, 16 }, NULL, NULL, &VolumeSliderValue, 0, 100);
+                GuiSliderBar((Rectangle){ screenWidthDefault/2-180, screenHeightDefault-60, 360, 16 }, NULL, NULL, &TimeSliderValue, 0.0f, GetMusicTimeLength(music));
                 GuiLabel((Rectangle){ screenWidthDefault-170, 20, 112, 16 }, "Vol:");
                 GuiPanel((Rectangle){ 25, 50, 360, 360 }, NULL);
             }

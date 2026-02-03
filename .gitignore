@@ -3,3 +3,4 @@ lib/
 bin/
 *.exe
 *.o
+*.wav
